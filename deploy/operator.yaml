@@ -17,7 +17,7 @@ spec:
       containers:
         - name: compliance-operator
           # Replace this with the built image name
-          image: quay.io/jhrozek/compliance-operator
+          image: image-registry.openshift-image-registry.svc:5000/openshift-compliance/compliance-operator@sha256:0f1e430c8221d0244150fd3488a910557a8f8d58987dca5ec7ab73ccbef9026f
           command:
           - compliance-operator
           imagePullPolicy: Always
