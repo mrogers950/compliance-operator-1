@@ -604,6 +604,64 @@ func newPodForNode(scanInstance *complianceoperatorv1alpha1.ComplianceScan, node
 	}
 }
 
+// Serve up arf reports for a compliance scan with a web service protected by openshift auth (oauth-proxy sidecar).
+// Needs corresponding Service (with service-serving cert).
+// Need to aggregate reports into one service ? on subdirs?
+func resultServerPod(scanInstance *complianceoperatorv1alpha1.ComplianceScan, logger logr.Logger) *corev1.Pod {
+	logger.Info("Creating scan result server pod")
+	podLabels := map[string]string{
+		"complianceScan": scanInstance.Name,
+	}
+
+	return &corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      scanInstance.Name + "result-server",
+			Namespace: scanInstance.Namespace,
+			Labels:    podLabels,
+		},
+		Spec: corev1.PodSpec{
+			ServiceAccountName: "compliance-operator",
+			Containers: []corev1.Container{
+				{
+					Name:            "oauth-proxy",
+					Image:           "openshift/oauth-proxy:latest",
+					ImagePullPolicy: "IfNotPresent",
+					Args: []string{
+						"--https-address=:8443",
+						"--upstream=http://127.0.0.1:8080",
+						"--tls-cert=/etc/tls/private/tls.crt",
+						"--tls-key=/etc/tls/private/tls.key", // provide with service-serving-cert
+						// add --openshift-sar checks to lock down access
+					},
+				},
+				{
+					Name:  "result-server",
+					Image: GetComponentImage(RESULT_SERVER),
+					Args: []string{
+						"--path=/reports/",
+						"--address=127.0.0.1",
+						"--port=8080",
+					},
+					SecurityContext: &corev1.SecurityContext{
+						Privileged: &trueVal,
+					},
+
+					VolumeMounts: []corev1.VolumeMount{
+						{
+							Name:      "arfreports",
+							MountPath: "/reports",
+						},
+					},
+				},
+			},
+			Volumes: []corev1.Volume{
+				//
+			},
+		},
+	}
+
+}
+
 // pod names are limited to 63 chars, inclusive. Try to use a friendly name, if that can't be done,
 // just use a hash. Either way, the node would be present in a label of the pod.
 func createPodForNodeName(scanName, nodeName string) string {
