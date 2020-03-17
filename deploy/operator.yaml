@@ -15,7 +15,7 @@ spec:
       serviceAccountName: compliance-operator
       containers:
         - name: compliance-operator
-          image: quay.io/compliance-operator/compliance-operator
+          image: image-registry.openshift-image-registry.svc:5000/openshift-compliance/compliance-operator
           command:
           - compliance-operator
           imagePullPolicy: Always
@@ -31,13 +31,13 @@ spec:
             - name: OPERATOR_NAME
               value: "compliance-operator"
             - name: OPENSCAP_IMAGE
-              value: "quay.io/jhrozek/openscap-ocp:remediations_demo"
+              value: "quay.io/mrogers950/openscap-ocp:upstream"
             - name: LOG_COLLECTOR_IMAGE
-              value: "quay.io/compliance-operator/resultscollector:latest"
+              value: "image-registry.openshift-image-registry.svc:5000/openshift-compliance/resultscollector:latest"
             - name: RESULT_SERVER_IMAGE
-              value: "quay.io/compliance-operator/resultserver:latest"
+              value: "image-registry.openshift-image-registry.svc:5000/openshift-compliance/resultserver:latest"
             - name: REMEDIATION_AGGREGATOR_IMAGE
-              value: "quay.io/compliance-operator/remediation-aggregator:latest"
+              value: "image-registry.openshift-image-registry.svc:5000/openshift-compliance/remediation-aggregator:latest"
       nodeSelector:
         node-role.kubernetes.io/master: ""
       tolerations:
