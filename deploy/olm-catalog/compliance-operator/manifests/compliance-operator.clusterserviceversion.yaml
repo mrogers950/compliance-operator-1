@@ -201,6 +201,15 @@ spec:
       kind: ScanSettingBinding
       name: scansettingbindings.compliance.openshift.io
       version: v1alpha1
+      specDescriptors:
+        - description: Names of Profiles
+          path: profiles
+          x-descriptors:
+            - servicebinding:profiles:elementType=sliceOfMaps:sourceKey=name:sourceValue=kind
+        - description: Names of Profiles
+          path: settingsRef
+          x-descriptors:
+            - servicebinding:profiles:elementType=sliceOfMaps:sourceKey=name:sourceValue=kind
     - description: ScanSetting is the Schema for the scansettings API
       kind: ScanSetting
       name: scansettings.compliance.openshift.io

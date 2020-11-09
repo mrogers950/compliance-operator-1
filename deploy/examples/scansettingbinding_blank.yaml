@@ -1,0 +1,5 @@
+# Might need to load blank ScanSettingBindings to be filled in by the Service Binding Operator
+apiVersion: compliance.openshift.io/v1alpha1
+kind: ScanSettingBinding
+metadata:
+  name: service-binding-demo

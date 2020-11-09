@@ -1,0 +1,26 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: ServiceBinding
+
+metadata:
+  name: binding-request
+  namespace: openshift-compliance
+
+spec:
+  application:
+    group: compliance.openshift.io
+    resource: ScanSettingBinding
+    name: service-binding-demo
+    version: v1alpha1
+
+  services:
+    - group: compliance.openshift.io
+      version: v1alpha1
+      kind: ScanSetting
+      name: default
+      namespace: openshift-compliance
+    - group: compliance.openshift.io
+      version: v1alpha1
+      kind: Profile
+      name: ocp4-e8
+      namespace: openshift-compliance
